@@ -1,4 +1,4 @@
-const Workout = require("../models/workout");
+const Workout = require("../models/Workout");
 
 // Add a new workout for the logged-in user
 exports.addWorkOut = async (req, res) => {
