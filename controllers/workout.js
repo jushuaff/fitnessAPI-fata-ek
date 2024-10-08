@@ -1,4 +1,3 @@
-//const Workout = require("../models/workout");
 const Workout = require("../models/Workout");
 
 // Add a new workout for the logged-in user
@@ -28,7 +27,12 @@ exports.getMyWorkouts = async (req, res) => {
 
     try {
         const workouts = await Workout.find({ userId });
-        res.status(200).json(workouts);
+
+        if (!Array.isArray(workouts)) {
+            return res.status(500).json({ message: "Invalid response format" });
+        }
+
+        res.status(200).json({ success: true, workouts });
     } catch (error) {
         res.status(500).json({ message: "Error fetching workouts", error });
     }
@@ -51,7 +55,7 @@ exports.updateWorkout = async (req, res) => {
         workout.status = status !== undefined ? status : workout.status;
 
         await workout.save();
-        res.status(200).json(workout);
+        res.status(200).json({ message: "Workout updated successfully", workout });
     } catch (error) {
         res.status(500).json({ message: "Error updating workout", error });
     }
