@@ -24,29 +24,26 @@ module.exports.registerUser = (req,res) => {
 };
 
 
-module.exports.loginUser = (req,res) => {
+module.exports.loginUser = (req, res) => {
     if(req.body.email.includes("@")){
-        return User.findOne({ email : req.body.email })
+        return User.findOne({ email: req.body.email })
         .then(result => {
-
-            if(result == null){
-                return res.status(404).send({ error: "No Email Found" });
+            if(result == null) {
+                return res.status(404).send({ message: 'No Email Found' }); 
             } else {
-
                 const isPasswordCorrect = bcrypt.compareSync(req.body.password, result.password);
-                if (isPasswordCorrect) {
-
-                    return res.status(200).send({ access : auth.createAccessToken(result)})
-
+                if (isPasswordCorrect)  {
+                    return res.status(200).send({ 
+                        message: 'User logged in successfully',
+                        access: auth.createAccessToken(result)
+                    });
                 } else {
-
-                    return res.status(401).send({ message: "Email and password do not match" });
-
+                     return res.status(401).send({ message: 'Email and password do not match' });
                 }
             }
         })
-        .catch(err => err);
+        .catch(error => errorHandler(error, req, res));
     } else {
-        return res.status(400).send(false)
+        return res.status(400).send({ message: 'Invalid Email' });
     }
-};
+}
